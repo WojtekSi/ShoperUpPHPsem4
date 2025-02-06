@@ -1,0 +1,134 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container">
+        <h1 class="text-center my-4">Panel Usera </h1>
+
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label == 'error' ? 'danger' : 'success' }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h2 class="h5 m-0">Lista Najbliższych Dni <i class="fa-solid fa-calendar-days"></i></h2>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Liczba wolnych miejsc</th>
+                            <th>Status</th>
+                            <th>Numer Miejsca</th>
+                            <th>Nazwa Pojazdu</th> <!-- Nowa kolumna dla nazwy pojazdu -->
+                            <th>Akcje</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for date in dates %}
+                            <tr>
+                                <td>{{ date.date }}</td>
+                                <td>{{ 4 - date.reservationsCount }}</td>
+                                <td>
+                                    {% if date.reservationsCount < 4 %}
+                                        <span class="text-success">Wolne</span>
+                                    {% else %}
+                                        <span class="text-danger">Zajęte</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if date.myReservationsCount > 0 %}
+                                        {{ date.myReservation.parkingSpace.name }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if date.myReservationsCount > 0 %}
+                                        <!-- Wyświetlenie nazwy pojazdu jeśli istnieje rezerwacja -->
+                                        {{ date.myReservation.car.licencePlate }} - {{ date.myReservation.car.name }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if date.myReservationsCount > 0 %}
+                                        <a href="{{ path('user_reservation_edit', { 'date': date.date }) }}" class="btn btn-warning btn-sm">Edytuj</a>
+                                        <form id="reservationFormDelete_{{ date.date }}" action="{{ path('user_reservation_delete', { 'date': date.date }) }}" method="POST" class="d-inline">
+                                            <input type="hidden" name="_method" value="POST" />
+                                            <button type="submit" class="btn btn-danger btn-sm">Usuń</button>
+                                        </form>
+                                    {% elseif date.myReservationsCount == 0 and date.reservationsCount < 4 %}
+                                        <form id="reservationFormAdd_{{ date.date }}" action="{{ path('user_reservation_add', { 'date': date.date }) }}" method="POST">
+                                            <input type="hidden" name="_method" value="POST" />
+                                            <button type="submit" class="btn btn-primary btn-sm">Zarezerwuj</button>
+                                        </form>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="6" class="text-muted text-center">Brak dostępnych dat.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header bg-dark text-white">
+                <h2 class="h5 m-0">Zarządzanie Pojazdami</h2>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Numer Rejestracyjny</th>
+                            <th>Nazwa</th>
+                            <th>Typ</th>
+                            <th>Akcje</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for car in cars %}
+                            <tr>
+                                <td>{{ car.licencePlate }}</td>
+                                <td>{{ car.name }}</td>
+                                <td>{{ car.type }}</td>
+                                <td>
+                                    <div class="d-inline">
+                                        <a href="{{ path('user_cars_edit', { 'id': car.id }) }}" class="btn btn-warning btn-sm me-2">Edytuj</a>
+                                    </div>
+                                    {% if cars|length > 1 %}
+                                        <div class="d-inline">
+                                            <form id="carFormDelete_{{ car.id }}" action="{{ path('user_cars_delete', { 'id': car.id }) }}" method="POST" class="d-inline">
+                                                <input type="hidden" name="_method" value="POST" />
+                                                <button type="submit" class="btn btn-danger btn-sm">Usuń</button>
+                                            </form>
+                                        </div>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="5" class="text-center text-muted">Brak pojazdów do wyświetlenia.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div class="d-flex justify-content-end">
+                    <a href="{{ path('user_cars_add') }}" class="btn btn-outline-success">Dodaj Nowy Pojazd</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}

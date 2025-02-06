@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container my-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white text-center">
+                <h1 class="h4 m-0">Dodaj Nowego Użytkownika</h1>
+            </div>
+
+            <div class="card-body">
+                {# Formularz dodawania nowego użytkownika #}
+                {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+                
+                <div class="mb-3">
+                    {# Poprawiamy sposób renderowania formularza, aby lepiej zorganizować pola i etykiety #}
+                    {% for field in form %}
+                        <div class="form-group">
+                            {{ form_label(field, null, {'attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(field, {'attr': {'class': 'form-control'}}) }}
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <a href="/admin" class="btn btn-outline-secondary">
+                        <i class="fa fa-arrow-left"></i> Wróć do panelu administratora
+                    </a>
+                </div>
+
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
