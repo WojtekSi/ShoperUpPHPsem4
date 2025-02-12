@@ -29,10 +29,6 @@ class UserType extends AbstractType
                     new Assert\Length([
                         'max' => 180,
                         'maxMessage' => 'Adres e-mail nie może być dłuższy niż {{ limit }} znaków.',
-                    ]),
-                    new Assert\UniqueEntity([
-                        'fields' => 'email',
-                        'message' => 'Ten adres e-mail jest już zajęty.',
                     ])
                 ]
             ])

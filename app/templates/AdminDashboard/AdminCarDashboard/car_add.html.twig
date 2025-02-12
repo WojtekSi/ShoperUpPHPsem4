@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container my-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white text-center">
+                <h1 class="h4 m-0">Dodaj Nowego Użytkownika</h1>
+            </div>
+
+            <div class="card-body">
+                {# Wyświetlanie formularza do dodania użytkownika #}
+                {{ form(form) }}
+
+                <div class="text-center mt-4">
+                    <a href="/admin/cars" class="btn btn-outline-secondary w-100 w-sm-auto">
+                        <i class="fa fa-arrow-left"></i> Wróć do listy samochodów
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
